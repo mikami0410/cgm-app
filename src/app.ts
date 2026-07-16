@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import * as CANNON from 'cannon-es';
 
 class ThreeJSContainer {
     private scene!: THREE.Scene;
@@ -47,6 +48,25 @@ class ThreeJSContainer {
         const lvec = new THREE.Vector3(1, 1, 1).normalize();
         this.light.position.set(lvec.x, lvec.y, lvec.z);
         this.scene.add(this.light);
+
+        // ワールド
+        const world = new CANNON.World({ gravity: new CANNON.Vec3(0, -9.82, 0) });
+        world.defaultContactMaterial.friction = 0.006;
+        world.defaultContactMaterial.restitution = 0.1;
+
+        // 地面
+        const phongMaterial = new THREE.MeshPhongMaterial();
+        const planeGeometry = new THREE.PlaneGeometry(25, 25);
+        const planeMesh = new THREE.Mesh(planeGeometry, phongMaterial);
+        planeMesh.material.side = THREE.DoubleSide; // 両面
+        planeMesh.rotateX(-Math.PI / 2);
+        this.scene.add(planeMesh);
+        const planeShape = new CANNON.Plane()
+        const planeBody = new CANNON.Body({ mass: 0 })
+        planeBody.addShape(planeShape)
+        planeBody.position.set(planeMesh.position.x, planeMesh.position.y, planeMesh.position.z);
+        planeBody.quaternion.set(planeMesh.quaternion.x, planeMesh.quaternion.y, planeMesh.quaternion.z, planeMesh.quaternion.w);
+        world.addBody(planeBody)
 
         // 毎フレームのupdateを呼んで，更新
         // reqestAnimationFrame により次フレームを呼ぶ
