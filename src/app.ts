@@ -29,9 +29,9 @@ class ThreeJSContainer {
         renderer.shadowMap.type = THREE.PCFShadowMap;
 
         //カメラの設定
-        const camera = new THREE.PerspectiveCamera(90, width / height, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(95, width / height, 0.1, 1000);
         camera.position.copy(cameraPos);
-        camera.lookAt(new THREE.Vector3(0, 5, 0));
+        camera.lookAt(new THREE.Vector3(-1, 5, 0));
 
         // const orbitControls = new OrbitControls(camera, renderer.domElement);
 
@@ -39,9 +39,9 @@ class ThreeJSContainer {
         renderer.compile(this.scene, camera);
         // 毎フレームのupdateを呼んで，render
         // reqestAnimationFrame により次フレームを呼ぶ
-        let lookX = 0;
+        let lookX = -1;
         let timer = performance.now();
-        const cameraSpeed = 1.2;
+        const cameraSpeed = 1.5;
         const render: FrameRequestCallback = (_time) => {
             if (previousTime === null) {
                 previousTime = _time;
@@ -456,7 +456,7 @@ class ThreeJSContainer {
         for (let i = 0; i < 3; i++) {
             createDomino(8.5 + i * 0.5, 4, 4.5, 100, 0, 4.5);
         }
-        createBall(0.2, 10.65, 4, 4.5)
+        createBall(0.2, 10.65, 4, 4.5);
         createRail(11.3, 3, 2.8, -Math.PI / 12, 0);
         createKabe(0, 0, 0, 180, 1, 20);
         createTranporin(11.5, 2, 0, Math.PI / 6, 0, -Math.PI / 12, 1.5);
@@ -473,7 +473,7 @@ class ThreeJSContainer {
             const nextZ = 2.3 - 2 * Math.sin(Math.PI / 24 * (i + 1));
             createDomino(x, 1, z, nextX, 0, nextZ);
         }
-        for (let i = 0; i < 21; i++) {
+        for (let i = 0; i < 38; i++) {
             createDomino(23 + i * 0.5, 1, 0, 100, 0, 0);
         }
         for (let i = 0; i < 12; i++) {
@@ -503,15 +503,31 @@ class ThreeJSContainer {
             const nextZ = -(3 + 2 * Math.sin(Math.PI - Math.PI / 24 * (i + 1)));
             createDomino(x, 1, z, nextX, 0, nextZ);
         }
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 23; i++) {
             const x = 29 + i * 0.5;
-            createDomino(x, 1, -5, 100, 0, 0);
-            createDomino(x, 1, -2.5, 100, 0, 0);
-            createDomino(x, 1, 2.5, 100, 0, 0);
-            createDomino(x, 1, 5, 100, 0, 0);
+            if(i < 23){
+                createDomino(x, 1, 5, 100, 0, 0);
+            }
+            if(i < 17){
+                createDomino(x, 1, 2.5, 100, 0, 0);
+            }
+            if(i < 18){
+                createDomino(x, 1, -2.5, 100, 0, 0);
+            }
+            if(i < 16){
+                createDomino(x, 1, -5, 100, 0, 0);
+            }
         }
-        // const texture = textureLoader.load('texture/kabe_color.png');
-        // createFlag(27.8, 1, 0, texture);
+        const g = textureLoader.load('texture/g.png');
+        createFlag(37, 1, -5, g);
+        const o = textureLoader.load('texture/o.png');
+        createFlag(38, 1, -2.5, o);
+        const a = textureLoader.load('texture/a.png');
+        createFlag(42, 1, 0, a);
+        const l = textureLoader.load('texture/l.png');
+        createFlag(37.5, 1, 2.5, l);
+        const bikkuri = textureLoader.load('texture/bikkuri.png');
+        createFlag(40.5, 1, 5, bikkuri);
 
         // 毎フレームのupdateを呼んで，更新
         // reqestAnimationFrame により次フレームを呼ぶ
@@ -544,6 +560,6 @@ window.addEventListener("DOMContentLoaded", init);
 async function init() {
     const container = new ThreeJSContainer();
 
-    const viewport = await container.createRendererDOM(800, 480, new THREE.Vector3(0, 7, 10));
+    const viewport = await container.createRendererDOM(800, 480, new THREE.Vector3(-1, 7, 10.5));
     document.body.appendChild(viewport)
 }
